@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "611277820910",
+    "project_id": "coinkeeper-6c4af",
+    "storage_bucket": "coinkeeper-6c4af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611277820910:android:6340b0a6608264d45974ff",
+        "android_client_info": {
+          "package_name": "com.example.coinkeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "611277820910-cvuuec6brvs9u2o1aec5al4v5p0rhu67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLbdth8avocueFGfB-WM0COWlpaemQlBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "611277820910-cvuuec6brvs9u2o1aec5al4v5p0rhu67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

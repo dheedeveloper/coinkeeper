@@ -40,6 +40,16 @@ dependencies:
   smooth_page_indicator: ^1.0.1
   shared_preferences: ^2.0.18
   intl: ^0.18.0
+  pay:
+  google_fonts: ^4.0.3
+  firebase_core:
+  firebase_auth:
+  google_sign_in: ^5.4.4
+  cloud_firestore: ^4.3.1
+  uuid: ^3.0.7
+
+
+
 
 dev_dependencies:
   flutter_test:

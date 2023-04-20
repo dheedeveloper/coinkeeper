@@ -57,14 +57,14 @@ class _NewincomeState extends State<Newincome> {
                           onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.close)),
                       SizedBox(width: 200.w,),
-                      IconButton(
-                          onPressed: () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Homepage(
-                                    addincomename:name.text,addincomeamt:accBal.text,
-                                  ))),
-                          icon: const Icon(Icons.done)),
+                      // IconButton(
+                      //     onPressed: () => Navigator.pushReplacement(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (context) => Homepage(
+                      //               addincomename:name.text,addincomeamt:accBal.text,
+                      //             ))),
+                      //     icon: const Icon(Icons.done)),
                     ],
                   ),
                   SizedBox(height: 70.h,),

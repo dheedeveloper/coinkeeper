@@ -49,27 +49,27 @@ class _AddincomeState extends State<Addincome> {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close)),
         actions: [
-          IconButton(
-              onPressed: () {
-                amount.text.isNotEmpty
-                    ? Navigator.pushReplacement(
-                        context, SizeAnimatingRoute(page: Homepage(
-                  addincomelistamt: int.parse(widget.initamt)+int.parse(amount.text),
-                  addincome: amount.text,addincomedate: format.toString(),
-                )))
-                    : showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                            title: const Text("Enter your amount"),
-                            actions: [
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text("Ok"))
-                            ]),
-                      );
-              },
-              //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter the amount"))),
-              icon: const Icon(Icons.done))
+          // IconButton(
+          //     onPressed: () {
+          //       amount.text.isNotEmpty
+          //           ? Navigator.pushReplacement(
+          //               context, SizeAnimatingRoute(page: Homepage(
+          //         addincomelistamt: int.parse(widget.initamt)+int.parse(amount.text),
+          //         addincome: amount.text,addincomedate: format.toString(),
+          //       )))
+          //           : showDialog(
+          //               context: context,
+          //               builder: (context) => AlertDialog(
+          //                   title: const Text("Enter your amount"),
+          //                   actions: [
+          //                     TextButton(
+          //                         onPressed: () => Navigator.pop(context),
+          //                         child: const Text("Ok"))
+          //                   ]),
+          //             );
+          //     },
+          //     //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter the amount"))),
+          //     icon: const Icon(Icons.done))
         ],
       ),
       body: InkWell(

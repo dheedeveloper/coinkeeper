@@ -1,4 +1,5 @@
 import 'package:coinkeeper/main.dart';
+import 'package:coinkeeper/utility/customText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ class Transperant extends StatefulWidget {
   State<Transperant> createState() => _TransperantState();
 }
 
-class _TransperantState extends State<Transperant> {
+class _TransperantState extends State<Transperant> with CustomTextStyle{
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,7 +21,7 @@ class _TransperantState extends State<Transperant> {
           SizedBox(height:180.h),
           Center(
             child: Container(
-              height: 180.h,
+              height: 0.24.sh,
               width: 200.w,
               decoration: const BoxDecoration(
                   color: Colors.white,
@@ -29,19 +30,9 @@ class _TransperantState extends State<Transperant> {
             ),
           ),
           SizedBox(height: 20.h),
-          Text(
-            "Transparent",
-            style: TextStyle(fontSize: 25.sp, fontFamily: "style"),
-          ),
+          showTitleText("Transparent"),
           SizedBox(height: 20.h),
-          Text(
-            "CoinKeeper will show you what you spend money on",
-            style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-          ),
-          Text(
-            "and will teach you to set them apart",
-            style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-          )
+          showSubText("CoinKeeper will show you what you spend money on and will teach you to set them apart")
         ],
       ),
     ));

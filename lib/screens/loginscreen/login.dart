@@ -1,5 +1,9 @@
+import 'package:coinkeeper/screens/homescreen/homepage.dart';
 import 'package:coinkeeper/screens/homescreen/landingpage.dart';
 import 'package:coinkeeper/screens/loginscreen/coinkeeper.dart';
+import 'package:coinkeeper/screens/loginscreen/sign_in_screen.dart';
+import 'package:coinkeeper/utility/google_auth.dart';
+import 'package:coinkeeper/utility/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/screens/loginscreen/family.dart';
 import 'package:coinkeeper/screens/loginscreen/flexibility.dart';
@@ -22,6 +26,22 @@ class _LoginpageState extends State<Loginpage> {
   int initialIndex = 0;
   dotChange() {}
 
+  String userUid="";
+  Future<void> getToken()async{
+    final String storageToken= await StorageService().getUserId("uid");
+    setState(()  {
+      userUid=storageToken.toString();
+    });
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,8 +50,13 @@ class _LoginpageState extends State<Loginpage> {
             body: Column(
               children: [
                 SizedBox(
-                  height: 500.h,
+                  height: 0.72.sh,
                   child: PageView(
+                    onPageChanged: (value){
+                      setState(() {
+                        initialIndex=value;
+                      });
+                    },
                     controller: controller,
                     children: const [
                       Coinkeeper(),
@@ -56,20 +81,48 @@ class _LoginpageState extends State<Loginpage> {
                     controller: controller,
                     count: 5),
                 const Spacer(),
-                TextButton(
-                  child: Text(
-                    "SKIP",
-                    style: TextStyle(
-                        fontSize: 20.sp,
-                        fontFamily: "text",
-                        color: Colors.teal,
-                        letterSpacing: 3.w),
-                  ),
-                  onPressed: ()  {
-                    Navigator.push(context,
-                        SizeAnimatingRoute(page: const Landingpage(currency: "",)));
+                initialIndex < 4?
+                GestureDetector(
+                  onTap: (){
+                    if(initialIndex < 4){
+                      controller.nextPage(duration: Duration(milliseconds: 330), curve: Curves.linear);
+                    }
+
                   },
-                ),
+                  child:Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: Colors.tealAccent
+                    ),
+                    child:Icon(Icons.arrow_forward_ios,color: Colors.white,)
+                  ),
+                )
+                :GestureDetector(
+                  onTap: (){
+                    if(userUid==""){
+                      Authentication.signInWithGoogle(
+                          context: context);
+                    }
+                    else{
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
+                    }
+
+                  },
+                    child:Image.asset("assets/images/google.png",height: 50,width: 50,)),
+                // TextButton(
+                //   child: Text(
+                 //     "Go",
+                //     style: TextStyle(
+                //         fontSize: 16.sp,
+                //         color: Colors.teal,
+                //         letterSpacing: 3.w),
+                //   ),
+                //   onPressed: ()  {
+                //     controller.nextPage(duration: Duration(seconds: 1), curve: Curves.linear);
+                //   },
+                // ),
                 SizedBox(
                   height: 40.h,
                 )

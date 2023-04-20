@@ -1,4 +1,5 @@
 import 'package:coinkeeper/main.dart';
+import 'package:coinkeeper/utility/customText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ class Reliability extends StatefulWidget {
   State<Reliability> createState() => _ReliabilityState();
 }
 
-class _ReliabilityState extends State<Reliability> {
+class _ReliabilityState extends State<Reliability> with CustomTextStyle{
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -22,19 +23,10 @@ class _ReliabilityState extends State<Reliability> {
           ),),
         ),
         SizedBox(height: 20.h),
-        Text(
-          "Reliability",
-          style: TextStyle(fontSize: 25.sp, fontFamily: "style"),
-        ),
+        showTitleText("Reliability"),
         SizedBox(height: 20.h),
-        Text(
-          "CoinKeeper encrypts your data and protects them",
-          style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-        ),
-        Text(
-          "from being lost",
-          style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-        )
+        showSubText("CoinKeeper encrypts your data and protects them from being lost")
+
       ],),
     ));
   }

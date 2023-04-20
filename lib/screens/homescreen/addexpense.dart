@@ -63,30 +63,30 @@ class _AddexpenseState extends State<Addexpense> {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close)),
         actions: [
-          IconButton(
-              onPressed: () {
-              amount.text.isNotEmpty
-                  ? Navigator.pushReplacement(
-                      context,
-                      SizeAnimatingRoute(
-                          page: Homepage(
-                            expenselistname:widget.incomename,
-                        date: format.toString(),
-                        updateamt: amount.text,
-                       // walletamt: "10",
-                      )))
-                  : showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                          title: const Text("Enter your amount"),
-                          actions: [
-                            TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text("Ok"))
-                          ]),
-                    );},
-              //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter the amount"))),
-              icon: const Icon(Icons.done))
+          // IconButton(
+          //     onPressed: () {
+          //     amount.text.isNotEmpty
+          //         ? Navigator.pushReplacement(
+          //             context,
+          //             SizeAnimatingRoute(
+          //                 page: Homepage(
+          //                   expenselistname:widget.incomename,
+          //               date: format.toString(),
+          //               updateamt: amount.text,
+          //              // walletamt: "10",
+          //             )))
+          //         : showDialog(
+          //             context: context,
+          //             builder: (context) => AlertDialog(
+          //                 title: const Text("Enter your amount"),
+          //                 actions: [
+          //                   TextButton(
+          //                       onPressed: () => Navigator.pop(context),
+          //                       child: const Text("Ok"))
+          //                 ]),
+          //           );},
+          //     //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter the amount"))),
+          //     icon: const Icon(Icons.done))
         ],
       ),
       body: InkWell(

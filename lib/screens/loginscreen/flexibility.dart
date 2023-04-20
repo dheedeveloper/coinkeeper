@@ -1,4 +1,5 @@
 import 'package:coinkeeper/main.dart';
+import 'package:coinkeeper/utility/customText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ class Flexibility extends StatefulWidget {
   State<Flexibility> createState() => _FlexibilityState();
 }
 
-class _FlexibilityState extends State<Flexibility> {
+class _FlexibilityState extends State<Flexibility> with CustomTextStyle{
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -22,16 +23,9 @@ class _FlexibilityState extends State<Flexibility> {
           ),),
         ),
         SizedBox(height: 20.h),
-        Text(
-          "Flexibility",
-          style: TextStyle(fontSize: 25.sp, fontFamily: "style"),
-        ),
+        showTitleText("Flexibility"),
         SizedBox(height: 20.h),
-        Text(
-          "CoinKeeper is easily customizable to your needs",
-          style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-        ),
-
+        showSubText("CoinKeeper is easily customizable to your needs")
       ],),
     ));
   }

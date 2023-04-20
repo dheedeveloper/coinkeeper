@@ -1,4 +1,5 @@
 import 'package:coinkeeper/main.dart';
+import 'package:coinkeeper/utility/customText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ class Family extends StatefulWidget {
   State<Family> createState() => _FamilyState();
 }
 
-class _FamilyState extends State<Family> {
+class _FamilyState extends State<Family> with CustomTextStyle{
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -22,19 +23,9 @@ class _FamilyState extends State<Family> {
           ),),
         ),
         SizedBox(height: 20.h),
-        Text(
-          "Family finance",
-          style: TextStyle(fontSize: 25.sp, fontFamily: "style"),
-        ),
+        showTitleText("Family finance"),
         SizedBox(height: 20.h),
-        Text(
-          "You can use coinkeeper on various devices together with",
-          style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-        ),
-        Text(
-          "the members of your family",
-          style: TextStyle(fontSize: 13.5.sp, fontFamily: "style"),
-        )
+        showSubText("You can use coinkeeper on various devices together with the members of your family" )
       ],),
     ));
   }

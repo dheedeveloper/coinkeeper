@@ -1,24 +1,17 @@
-import 'package:coinkeeper/screens/homescreen/homepage.dart';
 import 'package:coinkeeper/screens/loginscreen/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  var loginStatus = prefs.getStringList("wallet");
-  var totalamt = prefs.getInt("totalamt");
-  runApp(MyApp(
-    totalamt: totalamt,
-    isLogin: loginStatus,
-  ));
+  Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final isLogin;
-  final totalamt;
-  const MyApp({Key? key, this.isLogin, this.totalamt}) : super(key: key);
+
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (BuildContext context, Widget? child) {
         return  MaterialApp(
          // home:Splashscreen(),
-            home: isLogin != null ?  const Homepage() : const Splashscreen(),
+            home:  const Splashscreen(),
             debugShowCheckedModeBanner: false);
       },
     );
