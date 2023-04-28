@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 
 
 
@@ -35,3 +37,10 @@ const womanOne="assets/images/womanOne.png";
 
 const joinTeam="assets/images/joinTeam.png";
 const newTeam="assets/images/newTeam.png";
+
+
+mixin ImageUtility{
+  showLoader({required double h,required double w}){
+    return Center(child:Image.asset("assets/images/loader.gif",height:h,width:w,),);
+  }
+}

@@ -4,11 +4,13 @@ import 'package:coinkeeper/screens/loginscreen/coinkeeper.dart';
 import 'package:coinkeeper/screens/loginscreen/sign_in_screen.dart';
 import 'package:coinkeeper/utility/google_auth.dart';
 import 'package:coinkeeper/utility/storage_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:coinkeeper/screens/loginscreen/family.dart';
 import 'package:coinkeeper/screens/loginscreen/flexibility.dart';
 import 'package:coinkeeper/screens/loginscreen/reliability.dart';
 import 'package:coinkeeper/screens/loginscreen/transparent.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -26,20 +28,19 @@ class _LoginpageState extends State<Loginpage> {
   int initialIndex = 0;
   dotChange() {}
 
-  String userUid="";
-  Future<void> getToken()async{
-    final String storageToken= await StorageService().getUserId("uid");
-    setState(()  {
-      userUid=storageToken.toString();
-    });
-
-  }
 
   @override
   void initState() {
     // TODO: implement initState
-    getToken();
+    getMessageToken();
     super.initState();
+  }
+
+
+  void getMessageToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) async{
+      await StorageService().setUserTokenId("token", token!);
+    });
   }
 
   @override
@@ -101,28 +102,10 @@ class _LoginpageState extends State<Loginpage> {
                 )
                 :GestureDetector(
                   onTap: (){
-                    if(userUid==""){
-                      Authentication.signInWithGoogle(
+                    Authentication.signInWithGoogle(
                           context: context);
-                    }
-                    else{
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Homepage()));
-                    }
-
                   },
                     child:Image.asset("assets/images/google.png",height: 50,width: 50,)),
-                // TextButton(
-                //   child: Text(
-                 //     "Go",
-                //     style: TextStyle(
-                //         fontSize: 16.sp,
-                //         color: Colors.teal,
-                //         letterSpacing: 3.w),
-                //   ),
-                //   onPressed: ()  {
-                //     controller.nextPage(duration: Duration(seconds: 1), curve: Curves.linear);
-                //   },
-                // ),
                 SizedBox(
                   height: 40.h,
                 )
@@ -139,11 +122,23 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+
+  String userUid="";
+  Future<void> getToken()async{
+    final String storageToken= await StorageService().getUserId("uid");
+    setState(()  {
+      userUid=storageToken.toString();
+    });
+
+  }
+
+
   @override
   void initState() {
+    getToken();
     Future.delayed(const Duration(seconds: 3))
         .then((value) => Navigator.pushReplacement(context,SizeAnimatingRoute(
-      page: const Loginpage(),
+      page: userUid != ""?Homepage() :Loginpage(),
     )));
     super.initState();
   }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinkeeper/utility/images.dart';
+import 'package:coinkeeper/utility/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +14,7 @@ class NewRoomEdit extends StatefulWidget {
   State<NewRoomEdit> createState() => _NewRoomEditState();
 }
 
-class _NewRoomEditState extends State<NewRoomEdit> {
+class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
 
   List houses=[houseOne,houseTwo,houseThree,houseFour,houseFive];
   String selectImage="";
@@ -21,6 +22,11 @@ class _NewRoomEditState extends State<NewRoomEdit> {
   List action=["Close","Add"];
   TextEditingController houseName=TextEditingController();
   TextEditingController income=TextEditingController();
+
+
+  ///room add controller
+
+  bool roomAdd=false;
 
 
   var uuid = Uuid();
@@ -41,21 +47,33 @@ class _NewRoomEditState extends State<NewRoomEdit> {
         widget.userData?["uid"]
       ])
     }).then((value) {
-      addUsers(roomId: roomId);
-    }).catchError((error) => print("Failed to add user: $error"));
+      setState(() {
+        roomAdd=false;
+      });
+      Navigator.pop(context);
+    }).catchError((error) {
+      setState(() {
+        roomAdd=false;
+      });
+    });
   }
 
 
-  Future<void> addUsers({required String roomId}) {
-    DocumentReference rooms = FirebaseFirestore.instance.collection('Rooms').doc(roomId);
-    return rooms.collection("users").doc(widget.userData?["uid"]).set({
-      "name":widget.userData?["userName"],
-      "image":widget.userData?["image"],
-      "status":"admin",
-      "uid":widget.userData?["uid"],
-    }).then((value) {
-      Navigator.pop(context);
-    }).catchError((error) => print("Failed to add user: $error"));
+
+  String userMessageToken="";
+  Future<void> getUserToken()async{
+    final String storageToken= await StorageService().getUserId("token");
+    setState(()  {
+      userMessageToken=storageToken.toString();
+    });
+
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -156,6 +174,7 @@ class _NewRoomEditState extends State<NewRoomEdit> {
                 ),
                 child: TextFormField(
                   controller: income,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: " Enter Income ",
                       hintStyle: TextStyle(fontSize: 14.sp),
@@ -166,7 +185,8 @@ class _NewRoomEditState extends State<NewRoomEdit> {
               ),
             ),
             SizedBox(height: 50.sp,),
-            Row(
+            roomAdd?SizedBox()
+            :Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 for(int i=0;i<action.length;i++)
@@ -181,8 +201,12 @@ class _NewRoomEditState extends State<NewRoomEdit> {
                         }
                           break;
                         case 1:{
-                          if(houseName.text != ""  || income.text !="")
-                          addRooms(name: houseName.text.toString(), image: selectImage, income: income.text.toString(),roomId: autoId);
+                          setState(() {
+                            if(houseName.text != ""  && income.text !="" && selectImage != ""){
+                              roomAdd=true;
+                              addRooms(name: houseName.text.toString(), image: selectImage, income: income.text.toString(),roomId: autoId);
+                            }
+                          });
                         }
                           break;
                         default:
@@ -201,7 +225,11 @@ class _NewRoomEditState extends State<NewRoomEdit> {
                     ),
                   )
               ],
-            )
+            ),
+            SizedBox(height: 25.sp),
+            roomAdd
+                ?showLoader(h: 60.sp, w: 60.sp)
+                :SizedBox()
           ],
         ),
       )),

@@ -34,6 +34,7 @@ class Authentication {
         user = userCredential.user;
         print(user?.uid);
         print(user?.displayName);
+        final String storageToken= await StorageService().getUserId("token");
         await StorageService().setUserId("uid", user?.uid ?? "");
         CollectionReference userData = FirebaseFirestore.instance.collection('users');
         userData.doc(user?.uid).set(
@@ -41,6 +42,7 @@ class Authentication {
               "userName" : user?.displayName,
               "image":"assets/images/manOne.png",
               "uid":user?.uid,
+              "messageToken":storageToken
 
             }
         ).then((value) {

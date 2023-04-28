@@ -21,6 +21,17 @@ class StorageService {
     return prefs.getString(key) ?? '';
   }
 
+  Future<void> setUserTokenId(String id, String value) async {
+    if (id != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(id, value);
+    }
+  }
+
+  Future<String> getUserTokenId(String key, {defaultValue = ''}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(key) ?? '';
+  }
 
 
 }
