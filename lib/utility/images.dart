@@ -9,6 +9,14 @@ import 'package:flutter/material.dart';
 
 const retail="assets/images/retail.png";
 const medical="assets/images/medical.png";
+const hotel="assets/images/hotel.png";
+const onion="assets/images/onion.png";
+const tomato="assets/images/tomato.png";
+const water="assets/images/water.png";
+const vegetable="assets/images/vegetable.png";
+const idly="assets/images/idly.png";
+const cylinder="assets/images/cylinder.png";
+const curd="assets/images/curd.png";
 
 
 ///house

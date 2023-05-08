@@ -35,6 +35,7 @@ class _HomepageState extends State<Homepage> with ImageUtility {
 
   TextEditingController userName = TextEditingController();
   TextEditingController joinCode = TextEditingController();
+  TextEditingController search=TextEditingController();
 
   String userUid="";
   DocumentSnapshot? userData;
@@ -69,6 +70,7 @@ class _HomepageState extends State<Homepage> with ImageUtility {
     print(event.docs[0].id);
     setState(() {
       roomList=event.docs;
+      backUpRoomList=event.docs;
     });
     print(roomList[0]["name"]);
   });
@@ -82,12 +84,14 @@ class _HomepageState extends State<Homepage> with ImageUtility {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   List roomList=[];
+  List backUpRoomList=[];
   bool showUserEdit=false;
   List userImages=[manOne,manTwo,manThree,womanOne,manFour,manFive];
   int selectRoom=0;
   String selectImage="";
   int selectIndex = -1;
   String editName="";
+  bool status=true;
   List rowAction=["Change","Close"];
   List nameAction=["Close","Change"];
   List joinRow=["Close","Join"];
@@ -681,14 +685,78 @@ class _HomepageState extends State<Homepage> with ImageUtility {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 10.sp,),
-                     Padding(
-                       padding:  EdgeInsets.only(left: 25.sp,top: 15.sp),
-                       child: Text("Your Rooms",style: GoogleFonts.openSans(
-                           fontSize: 16.sp,fontWeight: FontWeight.w800,
-                           color: Colors.white
-                       ),),
-                     ),
-
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding:  EdgeInsets.only(left: 25.sp,top: 15.sp),
+                            child: Text("Your Rooms",style: GoogleFonts.openSans(
+                                fontSize: 16.sp,fontWeight: FontWeight.w800,
+                                color: Colors.white
+                            ),),
+                          ),
+                          Padding(
+                            padding:  EdgeInsets.only(right: 25.sp,top: 15.sp),
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                 if(status){
+                                   status=false;
+                                 }
+                                 else{
+                                   status=true;
+                                 }
+                                });
+                              },
+                              child: Container(
+                                height: 30,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.white
+                                ),
+                                child: Center(
+                                  child: Text(status?"Present":"Past",style: GoogleFonts.openSans(
+                                    fontWeight: FontWeight.w600,fontSize: 10.sp,color: Colors.black
+                                  ),),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding:  EdgeInsets.only(left: 23.sp,top: 22.sp),
+                        child: Container(
+                          height: 50,
+                          width: 0.9.sw,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.greenAccent.withOpacity(0.5),width: 3)
+                          ),
+                          child: TextFormField(
+                            onChanged: (value){
+                              setState(() {
+                                if(value.isEmpty){
+                                  roomList=backUpRoomList;
+                                }
+                                else{
+                                  roomList=roomList.where((room) => room["name"].toString().contains(value.toString())).toList();
+                                }
+                              });
+                            },
+                            controller: search,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                hintText: " Enter Room Name ",
+                                hintStyle: TextStyle(fontSize: 14.sp,color: Colors.grey),
+                                contentPadding: EdgeInsets.only(left: 20.sp),
+                                border:InputBorder.none
+                            ),
+                          ),
+                        ),
+                      ),
                         ListView.builder(
                           controller: scrollController,
                           shrinkWrap: true,
@@ -696,7 +764,8 @@ class _HomepageState extends State<Homepage> with ImageUtility {
                             itemBuilder: (context,i){
                             List users=roomList[i]["uid"];
                           return users.contains(userData?["uid"])
-                              ? Padding(
+                              ? status &&  DateTime.now().isBefore(DateTime.parse(roomList[i]["validityDate"]) )
+                          ?Padding(
                             padding:  EdgeInsets.only(left: 25.sp,top: 20.sp,right: 17.sp),
                             child: GestureDetector(
                               onTap: (){
@@ -832,7 +901,145 @@ class _HomepageState extends State<Homepage> with ImageUtility {
                               ),
                             ),
                           )
-                              :SizedBox();
+                              :!status &&  DateTime.now().isAfter(DateTime.parse(roomList[i]["validityDate"]) )
+                          ?Padding(
+                            padding:  EdgeInsets.only(left: 25.sp,top: 20.sp,right: 17.sp),
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>Room(room: roomList[i],userData: userData,)));
+                              },
+                              child: Container(
+                                height: 0.35.sw,
+                                width: 0.7.sw,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.tealAccent.withOpacity(0.3)
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 15.sp),
+                                    Padding(
+                                      padding:  EdgeInsets.only(left:20.sp,bottom: 8.sp),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Image.asset(roomList[i]["image"],height: 50,width: 50,),
+                                              SizedBox(width: 15.sp),
+                                              Text(roomList[i]["name"].toString(),style: GoogleFonts.openSans(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white
+                                              ),),
+                                            ],
+                                          ),
+                                          roomList[i]["admin"] == userData?["uid"]
+                                              ? Padding(
+                                            padding:  EdgeInsets.only(right: 10.sp),
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                setState(() {
+                                                  selectRoom=i;
+                                                  copy=true;
+                                                });
+                                                Timer.periodic(Duration(milliseconds: 100), (timer) {
+                                                  setState(() {
+                                                    copy=false;
+                                                    timer.cancel();
+                                                  });
+                                                });
+                                                Clipboard.setData(
+                                                    ClipboardData(text: roomList[i]["roomId"]));
+                                              },
+                                              child: Container(
+                                                height: 30,
+                                                width: 0.2.sw,
+                                                decoration: BoxDecoration(
+                                                    color:selectRoom==i && copy?Colors.greenAccent.withOpacity(0.3):Colors.white,
+                                                    borderRadius: BorderRadius.circular(7)
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.copy,color: Colors.black,size: 14.sp,),
+                                                    SizedBox(width: 2.sp),
+                                                    Text("Copy",style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 10.sp,
+                                                        fontWeight: FontWeight.bold
+                                                    ),)
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ):SizedBox()
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:  EdgeInsets.only(left:25.sp,right: 25.sp),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Total",style: GoogleFonts.openSans(
+                                                  color: Colors.white,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.bold
+                                              ),),
+                                              SizedBox(height: 8.sp),
+                                              Text("\u{20B9} ${roomList[i]["income"].toString()}",style: GoogleFonts.openSans(
+                                                  color: Colors.tealAccent,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w600
+                                              ),)
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Balance",style: GoogleFonts.openSans(
+                                                  color: Colors.white,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.bold
+                                              ),),
+                                              SizedBox(height: 8.sp),
+                                              Text("\u{20B9} ${roomList[i]["balance"].toString()}",style: GoogleFonts.openSans(
+                                                  color: Colors.tealAccent,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w600
+                                              ),)
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Spent",style: GoogleFonts.openSans(
+                                                  color: Colors.white,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.bold
+                                              ),),
+                                              SizedBox(height: 8.sp),
+                                              Text("\u{20B9} ${roomList[i]["spent"].toString()}",style: GoogleFonts.openSans(
+                                                  color: Colors.tealAccent,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w600
+                                              ),)
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                              :SizedBox()
+                          :SizedBox();
                         })
 
                     ],

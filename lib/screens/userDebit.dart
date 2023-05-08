@@ -121,6 +121,7 @@ class _UserBasedAmountDebitState extends State<UserBasedAmountDebit> {
     );
   }
 }
+
 class Expense{
   String id;
   String name;

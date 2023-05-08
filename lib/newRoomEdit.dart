@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinkeeper/utility/images.dart';
 import 'package:coinkeeper/utility/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
 class NewRoomEdit extends StatefulWidget {
@@ -22,6 +25,12 @@ class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
   List action=["Close","Add"];
   TextEditingController houseName=TextEditingController();
   TextEditingController income=TextEditingController();
+  TextEditingController validity=TextEditingController();
+  final CalendarController controller = CalendarController();
+
+
+  String month="";
+  String year="";
 
 
   ///room add controller
@@ -40,7 +49,8 @@ class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
       "income":income,
       "balance":income,
       "spent":"0",
-      "validity":12,
+      "validity":selectDate,
+      "validityDate":validityDate,
       "admin":widget.userData?["uid"],
       "roomId":roomId,
       "uid":FieldValue.arrayUnion([
@@ -184,6 +194,45 @@ class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
                 ),
               ),
             ),
+            Padding(
+              padding:  EdgeInsets.only(left: 23.sp,top: 27.sp),
+              child: Text("Validity",style:GoogleFonts.openSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 16.sp,
+              ),),
+            ),
+            Padding(
+              padding:  EdgeInsets.only(left: 23.sp,top: 13.sp),
+              child: Container(
+                height: 50,
+                width: 0.8.sw,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.greenAccent.withOpacity(0.5),width: 3)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding:  EdgeInsets.only(left: 18.sp),
+                      child: Text(selectDate.isEmpty?"Pick Validity date":selectDate,style:GoogleFonts.openSans(
+                        fontSize: 14.sp,
+                        color: Colors.black.withOpacity(0.6),
+                        fontWeight: FontWeight.w500
+                      ),),
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.only(right: 10.sp),
+                      child: GestureDetector(
+                        onTap: (){
+                          showCalenderDialogue();
+                        },
+                          child: Icon(Icons.calendar_month,color: Colors.cyanAccent,)),
+                    )
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: 50.sp,),
             roomAdd?SizedBox()
             :Row(
@@ -202,7 +251,7 @@ class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
                           break;
                         case 1:{
                           setState(() {
-                            if(houseName.text != ""  && income.text !="" && selectImage != ""){
+                            if(houseName.text != ""  && income.text !="" && selectImage != "" && selectDate != ""){
                               roomAdd=true;
                               addRooms(name: houseName.text.toString(), image: selectImage, income: income.text.toString(),roomId: autoId);
                             }
@@ -234,5 +283,70 @@ class _NewRoomEditState extends State<NewRoomEdit> with ImageUtility {
         ),
       )),
     );
+  }
+  String selectDate="";
+  String validityDate="";
+
+  void selectionChanged(CalendarSelectionDetails args) {
+    SchedulerBinding.instance.addPostFrameCallback((duration) {
+      setState(() {
+        selectDate=DateFormat("dd'th' MMM,yyyy").format(args.date!).toString();
+        validityDate=args.date!.toString();
+        print(args.date);
+        Navigator.pop(context);
+      });
+    });
+  }
+
+  void viewChanged(ViewChangedDetails viewChangedDetails) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+      setState(() {
+        month = DateFormat('MMMM').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();
+        year = DateFormat('yyyy').format(viewChangedDetails
+            .visibleDates[viewChangedDetails.visibleDates.length ~/ 2]).toString();
+      });
+    });
+  }
+
+
+  showCalenderDialogue(){
+    return showDialog(context: context, builder: (context)
+    =>StatefulBuilder(builder: (context,setState){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        backgroundColor: Colors.black,
+        content: Container(
+          height: 0.4.sh,
+          width: 0.8.sw,
+
+          child: SfCalendar(
+            selectionDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.tealAccent.withOpacity(0.2),
+              border: Border.all(color: Colors.tealAccent),
+            ) ,
+            initialDisplayDate: DateTime.now(),
+            controller: controller,
+            onSelectionChanged: selectionChanged,
+            todayHighlightColor: Color(0xff018786),
+            onViewChanged: viewChanged,
+            cellBorderColor: Colors.black,
+            allowAppointmentResize: true,
+            headerStyle: CalendarHeaderStyle(textStyle: TextStyle(color: Colors.white)),
+            viewHeaderStyle: ViewHeaderStyle(dayTextStyle: TextStyle(color: Colors.white)),
+            view: CalendarView.month,
+            monthViewSettings: const MonthViewSettings(
+                monthCellStyle: MonthCellStyle(
+                  textStyle: TextStyle(color: Colors.white)
+                ),
+                showTrailingAndLeadingDates: false,
+                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+
+          ),
+        ),
+      );
+    }));
   }
 }

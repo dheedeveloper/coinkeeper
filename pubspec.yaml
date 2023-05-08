@@ -49,6 +49,9 @@ dependencies:
   uuid: ^3.0.7
   firebase_messaging: ^14.4.1
   flutter_local_notifications: ^13.0.0
+  syncfusion_flutter_calendar:
+  syncfusion_flutter_core:
+  syncfusion_flutter_datepicker:
 
 
 

@@ -27,7 +27,7 @@ class _RoomState extends State<Room> with ImageUtility {
   List users = [];
   List userUid=[];
   List expense = [];
-  List expenseImage = [medical, retail];
+  List expenseImage = [medical, retail,hotel,tomato,onion,water,cylinder,curd,vegetable,idly];
   bool showAddExpenseImage = false;
   bool showAddExpenseName = false;
   TextEditingController expenseController = TextEditingController();
@@ -115,7 +115,11 @@ class _RoomState extends State<Room> with ImageUtility {
         .update({
           "balance": amount,
         })
-        .then((value) {})
+        .then((value) {
+         setState(() {
+           expenseAddLoading=false;
+         });
+    })
         .catchError((error) => print("Failed to add user: $error"));
   }
 
@@ -153,7 +157,7 @@ class _RoomState extends State<Room> with ImageUtility {
         .set({
       "id":autoId,
       "amount":amountController.text.toString(),
-      "name":title,
+      "name":widget.userData?["userName"],
       "Date":DateFormat("dd'th' MMM,yyyy").format(DateTime.now()).toString(),
       "time":DateFormat('kk:mm:ss').format(DateTime.now())
     }).then((value) {
